@@ -12,10 +12,15 @@ public class player : MonoBehaviour
     private bool isGrounded;
 
     private Animator animator;
+
+    public int extraJumpValue = 1;
+    private int extraJump;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        extraJump = extraJumpValue;
     }
 
     // Update is called once per frame
@@ -24,9 +29,22 @@ public class player : MonoBehaviour
         float moveInput = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (isGrounded) 
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            extraJump = extraJumpValue;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isGrounded)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            }
+            else if (extraJump > 0) 
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                extraJump--;
+            }
         }
 
         SetAnimation(moveInput);
